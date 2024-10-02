@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 
 export default function Home() {
@@ -14,34 +13,19 @@ export default function Home() {
   // Check if the user is logged in when the component mounts
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token) {
-      setIsLoggedIn(true);
-    } else {
-      setIsLoggedIn(false);
-    }
+    setIsLoggedIn(!!token);
   }, []);
 
-  const navigateToLogin = () => {
-    router.push('/login');
-  };
-
-  const navigateToSignUp = () => {
-    router.push('/signup');
-  };
-
-  const navigateToCRUD = () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      alert('You must be logged in to manage Tarot readings!');
-    } else {
-      router.push('/crud');
-    }
-  };
+  const navigateToLogin = () => router.push('/login');
+  const navigateToSignUp = () => router.push('/signup');
+  const navigateToCRUD = () =>
+    !localStorage.getItem('token')
+      ? alert('You must be logged in to manage Tarot readings!')
+      : router.push('/crud');
 
   const navigateToReading = () => {
     if (!name || !birthDate || !question) {
-      alert('Please fill in all fields to get a Tarot reading.');
-      return;
+      return alert('Please fill in all fields to get a Tarot reading.');
     }
     router.push(
       `/reading?name=${encodeURIComponent(name)}&birthDate=${encodeURIComponent(
@@ -51,107 +35,77 @@ export default function Home() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Remove the token from localStorage
+    localStorage.removeItem('token');
     setIsLoggedIn(false);
-    router.push('/login'); // Redirect to login after logging out
+    router.push('/login');
   };
 
   return (
-    <Container>
-      <Title>Welcome to Tarot Card Reading App</Title>
+    <div className="bg-gradient-to-br from-gray-900 via-purple-800 to-black text-white min-h-screen flex flex-col justify-center items-center px-4">
+      <h1 className="text-3xl md:text-4xl font-semibold text-pink-200 mb-8 text-center">
+        Welcome to Tarot Card Reading App
+      </h1>
 
       {!isLoggedIn ? (
-        <>
-          <Button onClick={navigateToLogin}>Login</Button>
-          <Button onClick={navigateToSignUp}>Sign Up</Button>
-        </>
+        <div className="space-y-4 w-full max-w-sm">
+          <button
+            onClick={navigateToLogin}
+            className="w-full py-3 text-lg bg-pink-200 text-gray-900 font-bold rounded-lg shadow-md hover:bg-pink-300 transition-all"
+          >
+            Login
+          </button>
+          <button
+            onClick={navigateToSignUp}
+            className="w-full py-3 text-lg bg-pink-200 text-gray-900 font-bold rounded-lg shadow-md hover:bg-pink-300 transition-all"
+          >
+            Sign Up
+          </button>
+        </div>
       ) : (
         <>
-          <Input
+          <input
             type="text"
             placeholder="Enter your name"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            className="w-full max-w-sm py-3 px-4 mb-4 text-lg bg-gray-800 text-white border border-pink-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300"
           />
-          <Input
+          <input
             type="date"
             value={birthDate}
             onChange={(e) => setBirthDate(e.target.value)}
+            className="w-full max-w-sm py-3 px-4 mb-4 text-lg bg-gray-800 text-white border border-pink-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300"
           />
-          <Input
+          <input
             type="text"
             placeholder="Ask your question"
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
+            className="w-full max-w-sm py-3 px-4 mb-4 text-lg bg-gray-800 text-white border border-pink-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300"
           />
 
-          <Button onClick={navigateToCRUD}>Manage Tarot Readings</Button>
-          <Button onClick={navigateToReading}>Get Tarot Reading</Button>
-          <Button onClick={handleLogout}>Logout</Button>
+          <div className="space-y-4 w-full max-w-sm">
+            <button
+              onClick={navigateToCRUD}
+              className="w-full py-3 text-lg bg-pink-200 text-gray-900 font-bold rounded-lg shadow-md hover:bg-pink-300 transition-all"
+            >
+              Manage Tarot Readings
+            </button>
+            <button
+              onClick={navigateToReading}
+              className="w-full py-3 text-lg bg-pink-200 text-gray-900 font-bold rounded-lg shadow-md hover:bg-pink-300 transition-all"
+            >
+              Get Tarot Reading
+            </button>
+            <button
+              onClick={handleLogout}
+              className="w-full py-3 text-lg bg-pink-200 text-gray-900 font-bold rounded-lg shadow-md hover:bg-pink-300 transition-all"
+            >
+              Logout
+            </button>
+          </div>
         </>
       )}
-    </Container>
+    </div>
   );
 }
-
-// Styled components
-const Container = styled.div`
-  background: linear-gradient(135deg, #1c1b29, #3d2c4d);
-  color: #f5f5f5;
-  padding: 50px;
-  min-height: 100vh;
-  max-width: 500px;
-  margin: 50px auto;
-  text-align: center;
-  font-family: 'Poppins', sans-serif;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-`;
-
-const Title = styled.h1`
-  margin-bottom: 30px;
-  font-family: 'Playfair Display', serif;
-  font-size: 36px;
-  color: #ffddc1;
-  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
-`;
-
-const Input = styled.input`
-  padding: 12px;
-  margin-bottom: 16px;
-  width: 100%;
-  border-radius: 8px;
-  border: 2px solid #ffddc1;
-  background-color: #1c1b29;
-  color: #fff;
-  outline: none;
-
-  &::placeholder {
-    color: #ccc;
-  }
-`;
-
-const Button = styled.button`
-  padding: 12px;
-  background-color: #ffddc1;
-  color: #1c1b29;
-  font-size: 18px;
-  font-weight: bold;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  margin: 10px 0;
-  transition: all 0.3s ease;
-  width: 100%;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-
-  &:hover {
-    background-color: #f7bfb4;
-    box-shadow: 0 6px 15px rgba(255, 221, 193, 0.6);
-    transform: translateY(-3px);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
-`;

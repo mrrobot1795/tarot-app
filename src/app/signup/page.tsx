@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import styled from 'styled-components';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -37,87 +36,49 @@ export default function SignupPage() {
   };
 
   return (
-    <SignupContainer>
+    <div className="flex justify-center items-center h-screen bg-gradient-to-br from-gray-900 via-purple-800 to-black">
       <ToastContainer />
-      <FormTitle>Sign Up</FormTitle>
-      <SignupForm onSubmit={handleSignup}>
-        <Input
+      <form
+        onSubmit={handleSignup}
+        className="bg-white p-10 rounded-lg shadow-lg w-full max-w-sm flex flex-col"
+      >
+        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+          Sign Up
+        </h2>
+
+        <input
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           placeholder="Username"
           required
+          className="p-3 mb-4 w-full text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
         />
-        <Input
+
+        <input
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
           type="email"
           required
+          className="p-3 mb-4 w-full text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
         />
-        <Input
+
+        <input
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
           type="password"
           required
+          className="p-3 mb-6 w-full text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
         />
-        <SignupButton type="submit">Sign Up</SignupButton>
-      </SignupForm>
-    </SignupContainer>
+
+        <button
+          type="submit"
+          className="py-3 bg-purple-600 text-white font-bold rounded-lg hover:bg-purple-700 transition-all"
+        >
+          Sign Up
+        </button>
+      </form>
+    </div>
   );
 }
-
-// Styled components
-
-const SignupContainer = styled.div`
-  max-width: 400px;
-  margin: 50px auto;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  font-family: 'Poppins', sans-serif;
-`;
-
-const FormTitle = styled.h2`
-  margin-bottom: 20px;
-  color: #333;
-`;
-
-const SignupForm = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-`;
-
-const Input = styled.input`
-  padding: 12px;
-  font-size: 16px;
-  color: black;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  width: 100%;
-  box-sizing: border-box;
-  transition: border-color 0.3s;
-
-  &:focus {
-    border-color: #4caf50;
-    outline: none;
-  }
-`;
-
-const SignupButton = styled.button`
-  padding: 12px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 18px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: #45a049;
-  }
-`;

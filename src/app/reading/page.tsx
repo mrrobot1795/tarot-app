@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import styled from "styled-components";
 import { TarotCard, tarotCards } from "../../data/tarotCards";
 import CardAnimation from "@/compoents/CardAnimation";
 import axios from "axios";
@@ -51,16 +50,14 @@ function ReadingContent() {
           const data = await response.json();
 
           if (response.ok) {
-            // Ensure the response is cleanly formatted
             setInterpretation(data.interpretation.replace(/\n+/g, "\n").trim());
           } else {
-            console.error("Error fetching interpretation:", data.error);
             setInterpretation(
               "An error occurred while fetching the interpretation."
             );
           }
         } catch (error) {
-          console.error("Error:", error);
+          console.error("error", error);
           setInterpretation(
             "An error occurred while fetching the interpretation."
           );
@@ -73,12 +70,14 @@ function ReadingContent() {
     }
   }, [drawnCards, question]);
 
-  // Function to save the reading to the database
   const handleSaveReading = async () => {
     try {
-      const token = localStorage.getItem("token"); // Get the token from localStorage
+      const token = localStorage.getItem("token");
       if (!token) {
-        alert("You must be logged in to save a reading.");
+        toast.error("You must be logged in to save a reading.", {
+          position: "top-right",
+          autoClose: 3000,
+        });
         return;
       }
 
@@ -86,25 +85,25 @@ function ReadingContent() {
         "/api/readings",
         {
           question,
-          cards: drawnCards.map((card) => card.name), // Convert drawnCards to string names
+          cards: drawnCards.map((card) => card.name),
           interpretation,
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Send the token in the Authorization header
+            Authorization: `Bearer ${token}`,
           },
         }
       );
 
       if (response.status === 201) {
-        setIsSaved(true); // Mark as saved
+        setIsSaved(true);
         toast.success("Reading saved successfully!", {
           position: "top-right",
           autoClose: 3000,
         });
       }
     } catch (error) {
-      console.error("Error saving reading:", error);
+      console.error("error", error);
       toast.error("An error occurred while saving the reading.", {
         position: "top-right",
         autoClose: 3000,
@@ -112,132 +111,64 @@ function ReadingContent() {
     }
   };
 
-  // Function to navigate to the Manage Readings page
   const goToManageReadings = () => {
-    router.push('/crud'); // Redirect to the CRUD page for managing readings
+    router.push('/crud');
   };
 
   return (
-    <Container>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-800 to-black text-white text-center py-8 px-4">
       <ToastContainer />
-      <Title>Your Tarot Reading</Title>
-      {name && <UserInfo>Name: {name}</UserInfo>}
-      {birthDate && <UserInfo>Birth Date: {birthDate}</UserInfo>}
-      <Subtitle>Question: {question}</Subtitle>
-      <CardAnimation drawnCards={drawnCards} />
-      {loading ? (
-        <LoadingMessage>Loading interpretation...</LoadingMessage>
-      ) : (
-        interpretation && (
-          <>
-            <Interpretation>
-              <h2>Interpretation:</h2>
-              <FormattedInterpretation>
-                {interpretation.split("\n").map((point, index) => (
-                  <p key={index}>{point.trim()}</p>
-                ))}
-              </FormattedInterpretation>
-            </Interpretation>
-            {!isSaved && (
-              <SaveButton onClick={handleSaveReading}>Save Reading</SaveButton>
-            )}
-            {isSaved && (
-              <>
-                <SuccessMessage>Reading saved successfully!</SuccessMessage>
-                <ManageButton onClick={goToManageReadings}>
-                  Manage Readings
-                </ManageButton>
-              </>
-            )}
-          </>
-        )
-      )}
-    </Container>
+      <div className="max-w-md mx-auto bg-gray-800 rounded-lg p-6 shadow-lg">
+        <h1 className="text-3xl md:text-4xl font-bold mb-4">Your Tarot Reading</h1>
+        {name && <p className="text-lg font-semibold mb-2">Name: {name}</p>}
+        {birthDate && <p className="text-lg font-semibold mb-4">Birth Date: {birthDate}</p>}
+        <h2 className="text-xl md:text-2xl mb-6">Question: {question}</h2>
+
+        <CardAnimation drawnCards={drawnCards} />
+
+        {loading ? (
+          <p className="italic text-lg mt-6">Loading interpretation...</p>
+        ) : (
+          interpretation && (
+            <>
+              <div className="mt-6 bg-white text-black p-4 rounded-lg shadow-md">
+                <h2 className="text-xl font-bold mb-4">Interpretation:</h2>
+                <div className="text-left">
+                  {interpretation.split("\n").map((point, index) => (
+                    <p key={index} className="mb-3 text-gray-700">{point.trim()}</p>
+                  ))}
+                </div>
+              </div>
+              {!isSaved ? (
+                <button
+                  onClick={handleSaveReading}
+                  className="mt-8 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full transition-colors"
+                >
+                  Save Reading
+                </button>
+              ) : (
+                <>
+                  <p className="text-green-500 font-semibold mt-6">Reading saved successfully!</p>
+                  <button
+                    onClick={goToManageReadings}
+                    className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition-colors"
+                  >
+                    Manage Readings
+                  </button>
+                </>
+              )}
+            </>
+          )
+        )}
+      </div>
+    </div>
   );
 }
 
-// Wrap ReadingContent in a Suspense boundary
 export default function ReadingPage() {
   return (
-    <Suspense fallback={<p>Loading...</p>}>
+    <Suspense fallback={<p className="text-center">Loading...</p>}>
       <ReadingContent />
     </Suspense>
   );
 }
-
-// Styled components
-
-const Container = styled.div`
-  text-align: center;
-  padding: 20px;
-`;
-
-const Title = styled.h1`
-  margin-bottom: 20px;
-`;
-
-const Subtitle = styled.h2`
-  margin-bottom: 40px;
-`;
-
-const UserInfo = styled.p`
-  margin-bottom: 10px;
-  font-size: 18px;
-  font-weight: bold;
-`;
-
-const Interpretation = styled.div`
-  margin-top: 40px;
-  text-align: left;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-`;
-
-const FormattedInterpretation = styled.div`
-  p {
-    margin-bottom: 15px;
-    line-height: 1.6;
-  }
-`;
-
-const LoadingMessage = styled.p`
-  margin-top: 40px;
-  font-style: italic;
-`;
-
-const SaveButton = styled.button`
-  padding: 12px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-top: 20px;
-  font-size: 16px;
-
-  &:hover {
-    background-color: #45a049;
-  }
-`;
-
-const ManageButton = styled.button`
-  padding: 12px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-top: 10px;
-  font-size: 16px;
-
-  &:hover {
-    background-color: #0056b3;
-  }
-`;
-
-const SuccessMessage = styled.p`
-  margin-top: 20px;
-  color: #4caf50;
-  font-weight: bold;
-`;
