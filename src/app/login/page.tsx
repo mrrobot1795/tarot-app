@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import styled from 'styled-components';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -38,85 +37,36 @@ export default function LoginPage() {
   };
 
   return (
-    <LoginContainer>
+    <div className="flex justify-center items-center h-screen bg-gradient-to-br from-gray-900 via-purple-800 to-black">
       <ToastContainer />
-      <LoginForm onSubmit={handleLogin}>
-        <Title>Login to Tarot Reading</Title>
-        <Input
+      <form onSubmit={handleLogin} className="bg-white p-10 rounded-lg shadow-lg w-full max-w-sm flex flex-col">
+        <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">Login to Tarot Reading</h1>
+        
+        <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
           required
+          className="p-3 mb-4 w-full text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
         />
-        <Input
+        
+        <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
           required
+          className="p-3 mb-6 w-full text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
         />
-        <Button type="submit">Login</Button>
-      </LoginForm>
-    </LoginContainer>
+        
+        <button
+          type="submit"
+          className="py-3 bg-purple-600 text-white font-bold rounded-lg hover:bg-purple-700 transition-all"
+        >
+          Login
+        </button>
+      </form>
+    </div>
   );
 }
-
-// Styled components
-
-const LoginContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background: linear-gradient(135deg, #1c1b29, #3d2c4d);
-`;
-
-const LoginForm = styled.form`
-  background-color: white;
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  max-width: 400px;
-`;
-
-const Title = styled.h1`
-  font-size: 24px;
-  margin-bottom: 20px;
-  color: #3d2c4d;
-`;
-
-const Input = styled.input`
-  padding: 12px;
-  color: black;
-  margin-bottom: 20px;
-  width: 100%;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-  font-size: 16px;
-  outline: none;
-
-  &:focus {
-    border-color: #3d2c4d;
-  }
-`;
-
-const Button = styled.button`
-  padding: 12px 20px;
-  width: 100%;
-  background-color: #4caf50;
-  color: white;
-  font-size: 18px;
-  font-weight: bold;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #45a049;
-  }
-`;
