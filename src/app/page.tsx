@@ -140,7 +140,7 @@ const Button = styled.button`
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  margin: 10px 0; /* Space between buttons */
+  margin: 10px 0;
   transition: all 0.3s ease;
   width: 100%;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
