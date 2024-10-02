@@ -1,6 +1,7 @@
 'use client';
 
 import GlobalStyle from './globalStyles';
+import './globals.css'; // Ensure this is imported here to apply Tailwind
 
 export default function RootLayout({
   children,
