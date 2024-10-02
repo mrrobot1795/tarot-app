@@ -1,7 +1,7 @@
 'use client';
 
-import GlobalStyle from './globalStyles';
-import './globals.css'; // Ensure this is imported here to apply Tailwind
+import './globals.css'; // Ensure this is correctly pointing to your global CSS
+import React from 'react';
 
 export default function RootLayout({
   children,
@@ -10,8 +10,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Tarot Card Reading App</title>
+        {/* Ensure styles are loaded properly */}
+      </head>
       <body>
-        <GlobalStyle />
         {children}
       </body>
     </html>

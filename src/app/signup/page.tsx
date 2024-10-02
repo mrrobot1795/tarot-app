@@ -94,6 +94,7 @@ const SignupForm = styled.form`
 const Input = styled.input`
   padding: 12px;
   font-size: 16px;
+  color: black;
   border: 1px solid #ddd;
   border-radius: 8px;
   width: 100%;

@@ -92,6 +92,7 @@ const Title = styled.h1`
 
 const Input = styled.input`
   padding: 12px;
+  color: black;
   margin-bottom: 20px;
   width: 100%;
   border-radius: 6px;
