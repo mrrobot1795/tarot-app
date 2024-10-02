@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import styled from "styled-components";
 import { TarotCard, tarotCards } from "../../data/tarotCards";
@@ -9,7 +9,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
-export default function ReadingPage() {
+function ReadingContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -97,7 +97,6 @@ export default function ReadingPage() {
       );
 
       if (response.status === 201) {
-        // Change to 201 because that's the created status in your backend
         setIsSaved(true); // Mark as saved
         toast.success("Reading saved successfully!", {
           position: "top-right",
@@ -154,6 +153,15 @@ export default function ReadingPage() {
         )
       )}
     </Container>
+  );
+}
+
+// Wrap ReadingContent in a Suspense boundary
+export default function ReadingPage() {
+  return (
+    <Suspense fallback={<p>Loading...</p>}>
+      <ReadingContent />
+    </Suspense>
   );
 }
 
