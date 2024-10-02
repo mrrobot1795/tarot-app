@@ -1,7 +1,6 @@
 'use client';
 
-import GlobalStyle from './globalStyles';
-import './globals.css'; // Ensure this is imported here to apply Tailwind
+import './globals.css'; // Import the consolidated styles
 
 export default function RootLayout({
   children,
@@ -10,10 +9,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <GlobalStyle />
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

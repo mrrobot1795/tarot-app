@@ -5,6 +5,7 @@ import axios from 'axios';
 import styled from 'styled-components';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useRouter } from 'next/navigation';
 
 // Define the types for a Reading
 interface Reading {
@@ -19,6 +20,7 @@ export default function CrudPage() {
   const [readings, setReadings] = useState<Reading[]>([]); // Initialize as an empty array
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter(); // To handle navigation
 
   // Fetch readings from the API
   useEffect(() => {
@@ -48,6 +50,19 @@ export default function CrudPage() {
 
     fetchReadings();
   }, []);
+
+  // Ensure browser back button goes to the home page
+  useEffect(() => {
+    const handlePopState = () => {
+      router.push('/');
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [router]);
 
   const handleDelete = async (id: string) => {
     try {
@@ -82,10 +97,16 @@ export default function CrudPage() {
     }
   };
 
+  const navigateToHome = () => {
+    router.push('/');
+  };
+
   return (
     <Container>
       <ToastContainer />
       <h1>Manage Tarot Readings</h1>
+
+      <Button onClick={navigateToHome}>Go to Home</Button> {/* Added Go to Home Button */}
 
       {loading && <LoadingMessage>Loading readings...</LoadingMessage>}
 
@@ -118,6 +139,7 @@ export default function CrudPage() {
 const Container = styled.div`
   max-width: 800px;
   margin: 50px auto;
+  color: black;
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
@@ -197,4 +219,3 @@ const NoReadingsMessage = styled.p`
   color: #999;
   margin-top: 20px;
 `;
-
