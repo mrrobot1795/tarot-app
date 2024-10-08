@@ -33,9 +33,10 @@ body {
 
 .audio-controls {
   position: fixed;
-  top: 1px;
-  right: 915px;
-  z-index: 0;
+  top: 0.5%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
 }
 
 .play-pause-button {

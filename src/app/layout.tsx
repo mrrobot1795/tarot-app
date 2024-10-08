@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import './globals.css';
-import React, { useState, useRef, useEffect } from 'react';
+import "./globals.css";
+import React, { useState, useRef, useEffect } from "react";
 
 export default function RootLayout({
   children,
@@ -13,30 +13,35 @@ export default function RootLayout({
 
   const togglePlayPause = () => {
     if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
+      if (audioRef.current.paused) {
         audioRef.current.play();
+        setIsPlaying(true);
+      } else {
+        audioRef.current.pause();
+        setIsPlaying(false);
       }
-      setIsPlaying(!isPlaying);
     }
   };
 
   useEffect(() => {
     const handleFirstInteraction = () => {
-      if (audioRef.current && !isPlaying) {
-        audioRef.current.play().catch(() => null);
-        setIsPlaying(true);
+      if (audioRef.current) {
+        audioRef.current
+          .play()
+          .then(() => {
+            setIsPlaying(true);
+          })
+          .catch(() => null);
       }
-      window.removeEventListener('click', handleFirstInteraction);
+      window.removeEventListener("click", handleFirstInteraction);
     };
 
-    window.addEventListener('click', handleFirstInteraction);
+    window.addEventListener("click", handleFirstInteraction);
 
     return () => {
-      window.removeEventListener('click', handleFirstInteraction);
+      window.removeEventListener("click", handleFirstInteraction);
     };
-  }, [isPlaying]);
+  }, []);
 
   return (
     <html lang="en">
@@ -46,14 +51,14 @@ export default function RootLayout({
         <title>Tarot Card Reading App</title>
       </head>
       <body>
-        <audio ref={audioRef} loop style={{ display: 'none' }}>
+        <audio ref={audioRef} loop style={{ display: "none" }}>
           <source src="/background-music.mp3" type="audio/mpeg" />
           Your browser does not support the audio element.
         </audio>
 
         <div className="audio-controls">
           <button onClick={togglePlayPause} className="play-pause-button">
-            {isPlaying ? 'Pause' : 'Play'}
+            {isPlaying ? "Pause" : "Play"}
           </button>
         </div>
 
