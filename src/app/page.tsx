@@ -41,7 +41,7 @@ export default function Home() {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("isGuest"); // Remove guest status
+    localStorage.removeItem("isGuest");
     setIsLoggedIn(false);
     setIsGuest(false);
     router.push("/");
@@ -91,7 +91,6 @@ export default function Home() {
             className="w-full max-w-sm py-3 px-4 mb-4 text-lg bg-gray-800 text-white border border-pink-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300"
           />
 
-          {/* Adding a label for the date input */}
           <label
             className="w-full max-w-sm text-pink-200 mb-2 text-lg"
             htmlFor="birthDate"
@@ -122,7 +121,6 @@ export default function Home() {
           />
 
           <div className="space-y-4 w-full max-w-sm">
-            {/* Only show Manage Tarot Readings button for logged-in users */}
             {!isGuest && (
               <button
                 onClick={navigateToCRUD}

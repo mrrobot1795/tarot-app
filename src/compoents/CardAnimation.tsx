@@ -21,16 +21,14 @@ const CardAnimation: React.FC<Props> = ({
   const deckIsEmpty = tarotCards.length === 0;
   const [isShuffling, setIsShuffling] = useState(false);
 
-  // Function to handle shuffle animation
   const handleShuffle = () => {
     setIsShuffling(true);
     setTimeout(() => {
-      onShuffle(); // Shuffle the deck after animation
+      onShuffle();
       setIsShuffling(false);
-    }, 5000); // Shuffle duration is 5 seconds
+    }, 5000);
   };
 
-  // Motion variants for the shuffle animation
   const shuffleVariants = {
     hidden: { opacity: 0 },
     show: (i: number) => ({
@@ -53,19 +51,18 @@ const CardAnimation: React.FC<Props> = ({
     },
   };
 
-  // Animation for cards falling into place
   const fallVariants = {
-    hidden: { opacity: 0, y: -300 }, // Start from above
+    hidden: { opacity: 0, y: -300 },
     visible: {
       opacity: 1,
-      y: 0, // End at the final position
+      y: 0,
       transition: { type: "spring", stiffness: 50, damping: 5 },
     },
   };
 
   const handleSelectCard = () => {
     if (tarotCards.length > 0 && !isShuffling) {
-      onSelect(tarotCards[0]); // Pass the top card to the parent component
+      onSelect(tarotCards[0]);
     }
   };
 
@@ -81,16 +78,16 @@ const CardAnimation: React.FC<Props> = ({
             tarotCards.map((card, index) => (
               <DeckWrapper
                 key={card.id}
-                onClick={handleSelectCard} // Draw the top card
-                custom={index} // Custom prop for animation
+                onClick={handleSelectCard}
+                custom={index}
                 variants={shuffleVariants}
                 initial={isShuffling ? "hidden" : "normal"}
                 animate={isShuffling ? "show" : "normal"}
                 exit="hidden"
                 style={{
-                  zIndex: tarotCards.length - index, // Layer cards on top of each other
-                  top: `${index * 0.3}px`, // Minimal offset for compact stacking
-                  left: `${index * 0.3}px`, // Minimal horizontal offset
+                  zIndex: tarotCards.length - index,
+                  top: `${index * 0.3}px`,
+                  left: `${index * 0.3}px`,
                 }}
               >
                 <CardInner>
@@ -107,7 +104,7 @@ const CardAnimation: React.FC<Props> = ({
         {selectedCards.map((card) => (
           <motion.div
             key={card.id}
-            variants={fallVariants} // Apply the falling animation
+            variants={fallVariants}
             initial="hidden"
             animate="visible"
             exit="hidden"
@@ -126,8 +123,6 @@ const CardAnimation: React.FC<Props> = ({
 };
 
 export default CardAnimation;
-
-// Styled components
 
 const Container = styled.div`
   text-align: center;

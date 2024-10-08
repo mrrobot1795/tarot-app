@@ -9,10 +9,8 @@ const openai = new OpenAI({
 
 type Card = {
   name: string;
-  // Add more properties if necessary
 };
 
-// Manually defining the message type based on OpenAI API
 type ChatCompletionMessage = {
   role: "system" | "user" | "assistant";
   content: string;
@@ -25,26 +23,19 @@ type TarotRequest = {
 
 export async function POST(request: Request) {
   try {
-    const body: TarotRequest = await request.json(); // Add explicit type
+    const body: TarotRequest = await request.json();
     const { question, cards } = body;
-
-    // Generate messages for the ChatGPT model
     const messages = generateMessages(question, cards);
-
-    // Call the OpenAI API
     const response = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: messages,
       max_tokens: 500,
       temperature: 0.7,
     });
-
-    // Safely access the content, providing a fallback value if it's null or undefined
     const rawInterpretation =
       response.choices[0].message?.content?.trim() ??
       "No interpretation available";
 
-    // Return the interpretation points as an array of strings
     return NextResponse.json({ interpretation: rawInterpretation });
   } catch (error: unknown) {
     console.error("Error:", error);
@@ -55,7 +46,6 @@ export async function POST(request: Request) {
   }
 }
 
-// Helper function to generate messages for ChatGPT
 function generateMessages(
   question: string,
   cards: Card[]

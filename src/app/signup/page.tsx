@@ -1,35 +1,35 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function SignupPage() {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const router = useRouter();
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    const response = await fetch('/api/auth/signup', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const response = await fetch("/api/auth/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, email, password }),
     });
 
     if (response.ok) {
-      toast.success('Signup successful! Redirecting to login...', {
-        position: 'top-right',
+      toast.success("Signup successful! Redirecting to login...", {
+        position: "top-right",
         autoClose: 3000,
       });
       setTimeout(() => {
-        router.push('/login');
-      }, 3000); // Redirect after 3 seconds
+        router.push("/login");
+      }, 3000);
     } else {
-      toast.error('Signup failed. Please try again.', {
-        position: 'top-right',
+      toast.error("Signup failed. Please try again.", {
+        position: "top-right",
         autoClose: 3000,
       });
     }
