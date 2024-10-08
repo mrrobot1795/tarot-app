@@ -35,7 +35,7 @@ export const tarotCards: TarotCard[] = [
   {
     id: 12,
     name: "The Hanged Man",
-    image: "/cards/RWS_Tarot_12_The_Hanged_Man.jpg",
+    image: "/cards/RWS_Tarot_12_Hanged_Man.jpg",
   },
   { id: 13, name: "Death", image: "/cards/RWS_Tarot_13_Death.jpg" },
   { id: 14, name: "Temperance", image: "/cards/RWS_Tarot_14_Temperance.jpg" },

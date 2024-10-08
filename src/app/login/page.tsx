@@ -26,7 +26,7 @@ export default function LoginPage() {
         autoClose: 3000,
       });
       setTimeout(() => {
-        router.push('/reading'); // Redirect after login
+        router.push('/'); // Redirect after login
       }, 3000);
     } else {
       toast.error('Login failed! Please check your credentials.', {

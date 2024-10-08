@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useRouter } from "next/navigation";
 
 // Define the types for a Reading
 interface Reading {
@@ -25,14 +25,14 @@ export default function CrudPage() {
   useEffect(() => {
     const fetchReadings = async () => {
       try {
-        const token = localStorage.getItem('token'); // Get token from localStorage
+        const token = localStorage.getItem("token"); // Get token from localStorage
         if (!token) {
-          setError('Authentication required.');
+          setError("Authentication required.");
           setLoading(false);
           return;
         }
 
-        const response = await axios.get('/api/readings', {
+        const response = await axios.get("/api/readings", {
           headers: {
             Authorization: `Bearer ${token}`, // Include token in Authorization header
           },
@@ -41,8 +41,8 @@ export default function CrudPage() {
         setReadings(response.data); // Set the response data directly
         setLoading(false);
       } catch (err) {
-        console.error('Error fetching readings:', err);
-        setError('Error fetching readings.');
+        console.error("Error fetching readings:", err);
+        setError("Error fetching readings.");
         setLoading(false);
       }
     };
@@ -53,22 +53,22 @@ export default function CrudPage() {
   // Ensure browser back button goes to the home page
   useEffect(() => {
     const handlePopState = () => {
-      router.push('/');
+      router.push("/");
     };
 
-    window.addEventListener('popstate', handlePopState);
+    window.addEventListener("popstate", handlePopState);
 
     return () => {
-      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener("popstate", handlePopState);
     };
   }, [router]);
 
   const handleDelete = async (id: string) => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (!token) {
-        toast.error('Authentication required.', {
-          position: 'top-right',
+        toast.error("Authentication required.", {
+          position: "top-right",
           autoClose: 3000,
         });
         return;
@@ -82,22 +82,22 @@ export default function CrudPage() {
 
       // Update the state to remove the deleted reading
       setReadings(readings.filter((reading) => reading._id !== id));
-      toast.success('Reading deleted successfully!', {
-        position: 'top-right',
+      toast.success("Reading deleted successfully!", {
+        position: "top-right",
         autoClose: 3000,
       });
     } catch (err) {
-      console.error('Error deleting reading:', err);
-      setError('Error deleting reading.');
-      toast.error('Error deleting reading.', {
-        position: 'top-right',
+      console.error("Error deleting reading:", err);
+      setError("Error deleting reading.");
+      toast.error("Error deleting reading.", {
+        position: "top-right",
         autoClose: 3000,
       });
     }
   };
 
   const navigateToHome = () => {
-    router.push('/');
+    router.push("/");
   };
 
   return (
@@ -118,16 +118,25 @@ export default function CrudPage() {
           </button>
         </div>
 
-        {loading && <p className="text-lg text-gray-600 text-center">Loading readings...</p>}
+        {loading && (
+          <p className="text-lg text-gray-600 text-center">
+            Loading readings...
+          </p>
+        )}
 
         {error && <p className="text-lg text-red-600 text-center">{error}</p>}
 
         {!loading && !error && readings.length > 0 && (
           <div className="space-y-6">
             {readings.map((reading) => (
-              <div key={reading._id} className="bg-gray-100 p-6 rounded-lg shadow-md">
+              <div
+                key={reading._id}
+                className="bg-gray-100 p-6 rounded-lg shadow-md"
+              >
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-xl font-semibold text-gray-800">{reading.question}</h3>
+                  <h3 className="text-xl font-semibold text-gray-800">
+                    {reading.question}
+                  </h3>
                   <button
                     onClick={() => handleDelete(reading._id)}
                     className="px-4 py-2 bg-red-500 text-white text-sm rounded-md hover:bg-red-600 transition-all"
@@ -135,15 +144,28 @@ export default function CrudPage() {
                     Delete
                   </button>
                 </div>
-                <p className="text-gray-700 mb-4">{reading.interpretation}</p>
-                <small className="text-gray-500">{new Date(reading.createdAt).toLocaleString()}</small>
+                <p className="text-gray-700 mb-4">
+                  {" "}
+                  {reading.interpretation.split("\n").map((line, index) => (
+                    <span key={index}>
+                      {line}
+                      <br />
+                      <br />
+                    </span>
+                  ))}
+                </p>
+                <small className="text-gray-500">
+                  {new Date(reading.createdAt).toLocaleString()}
+                </small>
               </div>
             ))}
           </div>
         )}
 
         {!loading && !error && readings.length === 0 && (
-          <p className="text-lg text-gray-600 text-center mt-6">No readings available.</p>
+          <p className="text-lg text-gray-600 text-center mt-6">
+            No readings available.
+          </p>
         )}
       </div>
     </div>
