@@ -1,67 +1,154 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { TarotCard } from '../data/tarotCards';
-import { motion } from 'framer-motion';
-import styled from 'styled-components';
+import React, { useState } from "react";
+import { TarotCard } from "../data/tarotCards";
+import { motion, AnimatePresence } from "framer-motion";
+import styled from "styled-components";
 
 type Props = {
-  drawnCards: TarotCard[];
+  tarotCards: TarotCard[];
+  selectedCards: TarotCard[];
+  onSelect: (card: TarotCard) => void;
+  onShuffle: () => void;
 };
 
-const CardAnimation: React.FC<Props> = ({ drawnCards }) => {
-  const [flippedCards, setFlippedCards] = useState<number[]>([]);
+const CardAnimation: React.FC<Props> = ({
+  tarotCards,
+  selectedCards,
+  onSelect,
+  onShuffle,
+}) => {
+  const deckIsEmpty = tarotCards.length === 0;
+  const [isShuffling, setIsShuffling] = useState(false);
 
-  useEffect(() => {
-    drawnCards.forEach((card, index) => {
-      setTimeout(() => {
-        setFlippedCards((prev) => [...prev, card.id]);
-      }, (index + 1) * 1000);
-    });
-  }, [drawnCards]);
+  // Function to handle shuffle animation
+  const handleShuffle = () => {
+    setIsShuffling(true);
+    setTimeout(() => {
+      onShuffle(); // Shuffle the deck after animation
+      setIsShuffling(false);
+    }, 5000); // Shuffle duration is 5 seconds
+  };
+
+  // Motion variants for the shuffle animation
+  const shuffleVariants = {
+    hidden: { opacity: 0 },
+    show: (i: number) => ({
+      opacity: 1,
+      x: 90,
+      y: 50,
+      rotate: (i % 2 === 0 ? 1 : -1) * Math.random() * 9,
+      transition: {
+        delay: i * 0.09,
+        duration: 0.9,
+        ease: "easeInOut",
+      },
+    }),
+    normal: {
+      opacity: 1,
+      x: 0,
+      y: 0,
+      rotate: 0,
+      transition: { duration: 0.9, ease: "easeInOut" },
+    },
+  };
+
+  // Animation for cards falling into place
+  const fallVariants = {
+    hidden: { opacity: 0, y: -300 }, // Start from above
+    visible: {
+      opacity: 1,
+      y: 0, // End at the final position
+      transition: { type: "spring", stiffness: 50, damping: 5 },
+    },
+  };
+
+  const handleSelectCard = () => {
+    if (tarotCards.length > 0 && !isShuffling) {
+      onSelect(tarotCards[0]); // Pass the top card to the parent component
+    }
+  };
 
   return (
     <Container>
-      {drawnCards.map((card) => {
-        const isFlipped = flippedCards.includes(card.id);
-        return (
-          <CardWrapper key={card.id}>
-            <CardInner
-              animate={{ rotateY: isFlipped ? 180 : 0, scale: isFlipped ? 1.05 : 1 }}
-              transition={{ duration: 0.8, ease: "easeInOut" }}
-            >
-              <CardFront />
+      <ShuffleButton onClick={handleShuffle} disabled={isShuffling}>
+        {isShuffling ? "Shuffling..." : "Shuffle Deck"}
+      </ShuffleButton>
+
+      <DeckContainer>
+        <AnimatePresence>
+          {!deckIsEmpty &&
+            tarotCards.map((card, index) => (
+              <DeckWrapper
+                key={card.id}
+                onClick={handleSelectCard} // Draw the top card
+                custom={index} // Custom prop for animation
+                variants={shuffleVariants}
+                initial={isShuffling ? "hidden" : "normal"}
+                animate={isShuffling ? "show" : "normal"}
+                exit="hidden"
+                style={{
+                  zIndex: tarotCards.length - index, // Layer cards on top of each other
+                  top: `${index * 0.3}px`, // Minimal offset for compact stacking
+                  left: `${index * 0.3}px`, // Minimal horizontal offset
+                }}
+              >
+                <CardInner>
+                  <CardFront />
+                </CardInner>
+              </DeckWrapper>
+            ))}
+        </AnimatePresence>
+      </DeckContainer>
+
+      {deckIsEmpty && <p>The deck is empty!</p>}
+
+      <DrawnCardsContainer>
+        {selectedCards.map((card) => (
+          <motion.div
+            key={card.id}
+            variants={fallVariants} // Apply the falling animation
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+          >
+            <DrawnCardWrapper>
               <CardBack>
                 <CardImage src={card.image} alt={card.name} />
                 <CardName>{card.name}</CardName>
               </CardBack>
-            </CardInner>
-          </CardWrapper>
-        );
-      })}
+            </DrawnCardWrapper>
+          </motion.div>
+        ))}
+      </DrawnCardsContainer>
     </Container>
   );
 };
 
 export default CardAnimation;
 
+// Styled components
+
 const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 50px;
-  gap: 20px; /* Add space between the cards */
-  flex-wrap: wrap; /* Allow cards to wrap on smaller screens */
+  text-align: center;
+  margin-top: 30px;
 `;
 
-const CardWrapper = styled.div`
-  width: 150px;
-  height: 250px;
-  perspective: 1000px;
+const DeckContainer = styled.div`
+  position: relative;
+  width: 120px;
+  height: 180px;
+  margin: 40px auto 60px;
   cursor: pointer;
+`;
 
+const DeckWrapper = styled(motion.div)`
+  position: absolute;
+  width: 120px;
+  height: 180px;
+  cursor: pointer;
+  perspective: 1000px;
   &:hover {
-    /* Slight scale on hover */
     transform: scale(1.05);
   }
 `;
@@ -73,49 +160,73 @@ const CardInner = styled(motion.div)`
   transform-style: preserve-3d;
   transition: transform 0.8s;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  border-radius: 12px;
-  
-  &:hover {
-    box-shadow: 0 8px 20px rgba(255, 255, 255, 0.8);
-  }
+  border-radius: 8px;
 `;
 
-const CardFace = styled.div`
+const CardFront = styled.div`
   width: 100%;
   height: 100%;
-  position: absolute;
-  backface-visibility: hidden;
-  border-radius: 12px;
+  background: url("/cards/card-back.jpg") no-repeat center/cover;
+  border-radius: 8px;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
 `;
 
-const CardFront = styled(CardFace)`
-  background: url('/cards/card-back.jpg') no-repeat center/cover;
-  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3); /* Adds shadow to give a 3D depth */
+const DrawnCardsContainer = styled.div`
+  margin-top: 40px;
+  margin-bottom: 70px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
 `;
 
-const CardBack = styled(CardFace)`
-  transform: rotateY(180deg);
+const DrawnCardWrapper = styled.div`
+  width: 90px;
+  height: 140px;
+`;
+
+const CardBack = styled.div`
   background: #fff;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 10px;
+  padding: 5px;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 `;
 
 const CardImage = styled.img`
-  width: 100%;
-  height: 70%;
+  width: 90%;
+  height: 65%;
   object-fit: cover;
-  border-radius: 10px;
-  margin-bottom: 10px;
+  border-radius: 5px;
+  margin-bottom: 5px;
 `;
 
 const CardName = styled.p`
-  font-size: 18px;
+  font-size: 12px;
   font-weight: bold;
   color: #333;
   text-align: center;
-  margin-top: 10px;
-  font-family: 'Playfair Display', serif; /* Use a more mystical font for the card names */
+  font-family: "Playfair Display", serif;
+`;
+
+const ShuffleButton = styled.button`
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  background-color: #6b4d9f;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #8a65c5;
+  }
+
+  &:disabled {
+    background-color: gray;
+    cursor: not-allowed;
+  }
 `;

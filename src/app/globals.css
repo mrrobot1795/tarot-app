@@ -30,3 +30,31 @@ body {
     text-wrap: balance;
   }
 }
+
+.audio-controls {
+  position: fixed;
+  top: 1px;
+  right: 915px;
+  z-index: 0;
+}
+
+.play-pause-button {
+  background-color: #6b4d9f;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.play-pause-button:hover {
+  background-color: #8a65c5;
+}
+
+.play-pause-button:focus {
+  outline: none;
+}
