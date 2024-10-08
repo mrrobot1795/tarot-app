@@ -6,9 +6,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
 
-// Define the types for a Reading
 interface Reading {
-  _id: string; // Use _id for MongoDB's document ID
+  _id: string;
   question: string;
   interpretation: string;
   createdAt: string;
@@ -16,16 +15,15 @@ interface Reading {
 
 // Component for managing Tarot Readings
 export default function CrudPage() {
-  const [readings, setReadings] = useState<Reading[]>([]); // Initialize as an empty array
+  const [readings, setReadings] = useState<Reading[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter(); // To handle navigation
+  const router = useRouter();
 
-  // Fetch readings from the API
   useEffect(() => {
     const fetchReadings = async () => {
       try {
-        const token = localStorage.getItem("token"); // Get token from localStorage
+        const token = localStorage.getItem("token");
         if (!token) {
           setError("Authentication required.");
           setLoading(false);
@@ -34,11 +32,11 @@ export default function CrudPage() {
 
         const response = await axios.get("/api/readings", {
           headers: {
-            Authorization: `Bearer ${token}`, // Include token in Authorization header
+            Authorization: `Bearer ${token}`,
           },
         });
 
-        setReadings(response.data); // Set the response data directly
+        setReadings(response.data);
         setLoading(false);
       } catch (err) {
         console.error("Error fetching readings:", err);
@@ -50,7 +48,6 @@ export default function CrudPage() {
     fetchReadings();
   }, []);
 
-  // Ensure browser back button goes to the home page
   useEffect(() => {
     const handlePopState = () => {
       router.push("/");
@@ -76,11 +73,10 @@ export default function CrudPage() {
 
       await axios.delete(`/api/readings?id=${id}`, {
         headers: {
-          Authorization: `Bearer ${token}`, // Include token in Authorization header
+          Authorization: `Bearer ${token}`,
         },
       });
 
-      // Update the state to remove the deleted reading
       setReadings(readings.filter((reading) => reading._id !== id));
       toast.success("Reading deleted successfully!", {
         position: "top-right",
@@ -108,7 +104,6 @@ export default function CrudPage() {
           Manage Tarot Readings
         </h1>
 
-        {/* Centering and reducing the button width */}
         <div className="flex justify-center mb-6">
           <button
             onClick={navigateToHome}

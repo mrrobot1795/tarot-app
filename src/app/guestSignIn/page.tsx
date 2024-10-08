@@ -1,31 +1,28 @@
-'use client';
+"use client";
 
-import React, { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function GuestSignIn() {
   const router = useRouter();
 
   const handleGuestLogin = () => {
-    // Set guest status in localStorage
-    localStorage.setItem('isGuest', 'true');
+    localStorage.setItem("isGuest", "true");
 
-    // Redirect to the tarot reading page
-    toast.success('Logged in as Guest! Redirecting...', {
-      position: 'top-right',
+    toast.success("Logged in as Guest! Redirecting...", {
+      position: "top-right",
       autoClose: 3000,
     });
     setTimeout(() => {
-      router.push('/');
+      router.push("/");
     }, 3000);
   };
 
   useEffect(() => {
-    // You could also use this effect to redirect if someone is already logged in as a guest
-    if (localStorage.getItem('isGuest') === 'true') {
-      router.push('/'); // If already signed in as guest, redirect to the reading page
+    if (localStorage.getItem("isGuest") === "true") {
+      router.push("/");
     }
   }, [router]);
 

@@ -3,11 +3,10 @@ import { connectDb } from "@/lib/mongoose";
 import { Reading } from "@/models/Reading";
 import { verifyToken } from "@/middleware/auth";
 
-// Handle GET request: Fetch user readings
 export async function GET(req: NextRequest) {
   try {
-    await connectDb(); // Ensure the database is connected
-    const user = await verifyToken(req); // Authenticate user
+    await connectDb();
+    const user = await verifyToken(req);
 
     if (!user) {
       return NextResponse.json(
@@ -27,11 +26,10 @@ export async function GET(req: NextRequest) {
   }
 }
 
-// Handle POST request: Create a new reading
 export async function POST(req: NextRequest) {
   try {
-    await connectDb(); // Ensure the database is connected
-    const user = await verifyToken(req); // Authenticate user
+    await connectDb();
+    const user = await verifyToken(req);
 
     if (!user) {
       return NextResponse.json(
@@ -42,7 +40,6 @@ export async function POST(req: NextRequest) {
 
     const { question, cards, interpretation } = await req.json();
 
-    // Input validation
     if (!question || !cards || !interpretation) {
       return NextResponse.json(
         { error: "Missing required fields" },
@@ -68,11 +65,10 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// Handle DELETE request: Delete a specific reading by ID
 export async function DELETE(req: NextRequest) {
   try {
-    await connectDb(); // Ensure the database is connected
-    const user = await verifyToken(req); // Authenticate user
+    await connectDb();
+    const user = await verifyToken(req);
 
     if (!user) {
       return NextResponse.json(
@@ -81,10 +77,9 @@ export async function DELETE(req: NextRequest) {
       );
     }
     console.log(req.url);
-    const { searchParams } = new URL(req.url); // Extract query params
-    const id = searchParams.get("id"); // Extract the ID from query params
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
 
-    // Check if ID is provided
     if (!id) {
       return NextResponse.json(
         { error: "Reading ID is required" },
@@ -92,7 +87,6 @@ export async function DELETE(req: NextRequest) {
       );
     }
 
-    // Find and delete the reading
     const deletedReading = await Reading.findOneAndDelete({
       _id: id,
       userId: user.id,

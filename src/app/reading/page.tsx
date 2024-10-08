@@ -2,7 +2,10 @@
 
 import React, { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { TarotCard, tarotCards as initialTarotCards } from "../../data/tarotCards";
+import {
+  TarotCard,
+  tarotCards as initialTarotCards,
+} from "../../data/tarotCards";
 import CardAnimation from "@/compoents/CardAnimation";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
@@ -33,17 +36,15 @@ function ReadingContent() {
     }
   }, [router]);
 
-  // Shuffle the deck
   const handleShuffleDeck = () => {
     const shuffledDeck = [...initialTarotCards].sort(() => Math.random() - 0.5);
     setDeck(shuffledDeck);
   };
 
-  // Draw a card from the deck
   const handleDrawCard = (card: TarotCard) => {
     if (selectedCards.length < 3) {
       setSelectedCards((prev) => [...prev, card]);
-      setDeck((prev) => prev.slice(1)); // Remove the drawn card from the deck
+      setDeck((prev) => prev.slice(1));
     }
   };
 
@@ -68,11 +69,15 @@ function ReadingContent() {
           if (response.ok) {
             setInterpretation(data.interpretation.replace(/\n+/g, "\n").trim());
           } else {
-            setInterpretation("An error occurred while fetching the interpretation.");
+            setInterpretation(
+              "An error occurred while fetching the interpretation."
+            );
           }
         } catch (error) {
           console.error("Error Occured:", error);
-          setInterpretation("An error occurred while fetching the interpretation.");
+          setInterpretation(
+            "An error occurred while fetching the interpretation."
+          );
         } finally {
           setLoading(false);
         }
@@ -131,9 +136,13 @@ function ReadingContent() {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-800 to-black text-white text-center py-8 px-4">
       <ToastContainer />
       <div className="max-w-3xl mx-auto bg-gray-800 rounded-lg p-6 shadow-lg">
-        <h1 className="text-3xl md:text-4xl font-bold mb-4">Select Your Cards</h1>
+        <h1 className="text-3xl md:text-4xl font-bold mb-4">
+          Select Your Cards
+        </h1>
         {name && <p className="text-lg font-semibold mb-2">Name: {name}</p>}
-        {birthDate && <p className="text-lg font-semibold mb-4">Birth Date: {birthDate}</p>}
+        {birthDate && (
+          <p className="text-lg font-semibold mb-4">Birth Date: {birthDate}</p>
+        )}
         <h2 className="text-xl md:text-2xl mb-6">Question: {question}</h2>
 
         <CardAnimation
@@ -170,7 +179,9 @@ function ReadingContent() {
                   )}
                   {!isGuest && isSaved && (
                     <>
-                      <p className="text-green-500 font-semibold mt-6">Reading saved successfully!</p>
+                      <p className="text-green-500 font-semibold mt-6">
+                        Reading saved successfully!
+                      </p>
                       <button
                         onClick={goToManageReadings}
                         className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition-colors"

@@ -8,7 +8,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [isPlaying, setIsPlaying] = useState(false); // Start with audio paused
+  const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const togglePlayPause = () => {
@@ -22,18 +22,15 @@ export default function RootLayout({
     }
   };
 
-  // Start playing the music on the first user interaction
   useEffect(() => {
     const handleFirstInteraction = () => {
       if (audioRef.current && !isPlaying) {
-        audioRef.current.play().catch(() => null); // Catch autoplay errors silently
+        audioRef.current.play().catch(() => null);
         setIsPlaying(true);
       }
-      // Remove the event listener after the first interaction
       window.removeEventListener('click', handleFirstInteraction);
     };
 
-    // Add the event listener to detect first user interaction
     window.addEventListener('click', handleFirstInteraction);
 
     return () => {
@@ -49,13 +46,11 @@ export default function RootLayout({
         <title>Tarot Card Reading App</title>
       </head>
       <body>
-        {/* Background Music */}
         <audio ref={audioRef} loop style={{ display: 'none' }}>
           <source src="/background-music.mp3" type="audio/mpeg" />
           Your browser does not support the audio element.
         </audio>
 
-        {/* Custom Play/Pause Button */}
         <div className="audio-controls">
           <button onClick={togglePlayPause} className="play-pause-button">
             {isPlaying ? 'Pause' : 'Play'}
